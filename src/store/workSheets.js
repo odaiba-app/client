@@ -8,6 +8,7 @@ export default {
   state: {
     sheets: [],
     count: 1,
+    groups: [],
     group: {
       id: 1,
       name: "....",
@@ -28,20 +29,10 @@ export default {
       state.groupid = payload;
     },
     SET_SHEETS(state, payload) {
-      this.sheets = payload;
-      socket.emit("updateSheet", {
-        sheets: state.sheets,
-        groupid: state.groupid,
-      });
-      state.count++;
+      state.sheets = payload;
     },
     CLEAR_SHEETS(state, payload) {
       state.sheets = [];
-      state.count = 1;
-      socket.emit("updateSheet", {
-        sheets: [],
-        groupid: state.groupid,
-      });
     },
     INPUT_ANSWER(state, payload) {
       /* {
@@ -50,12 +41,9 @@ export default {
         code: code == `verb-2` ? 2 : 3,
         idQuestion
       }*/
-      console.log(payload);
       let sheetsTemp = JSON.stringify(state.sheets);
       sheetsTemp = JSON.parse(sheetsTemp);
-      console.log(sheetsTemp);
       sheetsTemp[payload.indexArray].questions[payload.code] = payload.answer;
-      // sheetsTemp[payload.indexArray].idKey = Math.random()
       state.sheets = sheetsTemp;
       socket.emit("updateSheet", {
         sheets: state.sheets,
@@ -65,67 +53,38 @@ export default {
     SET_GROUP(state, payload) {
       state.group = payload;
     },
+    SET_GROUPS(state, payload) {
+      state.groups = payload;
+    },
   },
   actions: {
     getWorkSheets({ state, commit }) {
-      if (state.count > 5) {
-        return;
-      }
-      Axios.get(`/classrooms/2/work_groups/2/worksheets/${state.count}.json`)
-        .then(({ data }) => {
-          const sheets = state.sheets;
-          // console.log(JSON.parse(data.display_content));
+      // socket.on()
+      // commit("SET_SHEETS", sheets);
+    },
+    GetWorkGroup({ state, commit }) {
+      const name = localStorage.getItem("odaiba.name");
+      socket.on(`getWorkGroup-${name}`, function(workGroup) {
+        commit("SET_SHEETS", workGroup.sheets);
+        commit("SET_GROUP", workGroup);
+      });
+      socket.on("reset", function(payload) {
+        console.log(payload);
+        const indexGroup = payload.findIndex(function(r) {
+          return r.id === Number(state.groupid);
+        });
 
-          // console.log(JSON.parse(data.correct_content));
-          const questions = JSON.parse(data.display_content);
-          console.log(questions);
-          const answers = JSON.parse(data.correct_content);
-
-          const sheetsTemp = [
-            // {
-            //   questions: questions[1],
-            //   answers: answers[1],
-            //   id: data.id,
-            //   idKey: Math.random(),
-            // },
-            // {
-            //   questions: questions[2],
-            //   answers: answers[2],
-            //   id: data.id,
-            //   idKey: Math.random(),
-            // },
-          ];
-
-          // console.log(questions);
-          for (var i = 1; i <= 10; i++) {
-            sheetsTemp.push({
-              questions: questions[i],
-              answers: answers[i],
-              id: data.id,
-              idKey: Math.random(),
-            });
-          }
-          console.log(sheetsTemp);
-          console.log(questions);
-          // questions.forEach((qs) => {
-          //   sheetsTemp.push({
-          //     questions: questions[1],
-          //     answers: answers[1],
-          //     id: data.id,
-          //     idKey: Math.random(),
-          //   });
-          // });
-          // console.log(sheet);
-          // if () {}
-          sheets.push(...sheetsTemp);
-          console.log(sheets);
-          commit("SET_SHEETS", sheets);
-        })
-        .catch((err) => console.log(err));
+        commit("SET_SHEETS", workGroup[indexGroup].sheets);
+        commit("SET_GROUP", workGroup[indexGroup]);
+        commit("SET_GROUPS", workGroup);
+      });
+      socket.emit(`getWorkGroup`, {
+        id: state.groupid,
+        to: name,
+      });
     },
     AnswerQuestion({ commit, state }, payload) {
       commit("INPUT_ANSWER", payload);
-      console.log(payload);
       socket.emit("answerQ", payload);
     },
     UpdateAnswer({ commit }) {
@@ -157,24 +116,14 @@ export default {
         commit("SET_GROUP", response[indexGroup]);
       });
     },
+    getGroups() {
+      socket.emit("getGroups", "realtime-groups");
+    },
+    realtimeGroups({ commit }) {
+      socket.on("realtime-groups", function(response) {
+        console.log(response);
+        commit("SET_GROUPS", response);
+      });
+    },
   },
 };
-
-/* [
-//   sheet: {
-//     questions: [
-//       ["hashiru", "run", false, false],
-//       ["iu", "say", false, false]
-//     ],
-//     answered: {
-         1: false,
-         2: false,
-         3: false,
-         4: false,
-//     }
-//     answers: [
-//        ["hashiru", "run", "ran", "run"]
-//        ["iu", "say", "said", "said"]
-//     ]
-//   }
- ]*/

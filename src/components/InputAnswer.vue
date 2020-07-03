@@ -5,7 +5,6 @@
     placeholder="Write your answer"
     aria-label="Answer"
     v-model="answer"
-    @change="answerQ"
   />
 </template>
 
@@ -20,21 +19,22 @@ export default {
   data() {
     return {
       // answer: "",
-      ans: ""
+      ans: "",
+      bounce: false,
     };
   },
   computed: {
     answer: {
       get() {
-        return this.ans || (this.answerTemp ? this.answerTemp: "") 
+        return this.ans;
       },
       set(val) {
-        this.ans = val
-      }
-    }
+        this.ans = val;
+      },
+    },
   },
   methods: {
-    ...mapActions("workSheets", ["AnswerQuestion"]),
+    ...mapActions("workGroups", ["AnswerQuestion"]),
     answerQ() {
       // answer question
       console.log(this.answer);
@@ -47,6 +47,25 @@ export default {
       /* {
         
       }*/
+    },
+  },
+  created() {
+    const answerTemp = this.answerTemp == false ? "" : this.answerTemp;
+    this.answer = answerTemp;
+  },
+  watch: {
+    answerTemp() {
+      const answerTemp = this.answerTemp == false ? "" : this.answerTemp;
+      this.answer = answerTemp;
+    },
+    answer(val) {
+      if (!this.bounce && val !== this.answerTemp) {
+        this.bounce = true;
+        setTimeout(() => {
+          this.answerQ();
+          this.bounce = false;
+        }, 1000);
+      }
     },
   },
 };

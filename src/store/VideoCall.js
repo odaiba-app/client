@@ -1,20 +1,20 @@
-import Axios from "axios";
+import { serverTwoAPI } from "../config/api";
 import AgoraRTC from "agora-rtc-sdk";
-// import generateToken from "../helpers/generate_access_token";
+import {
+  appID,
+  appCertifcate,
+  channel,
+  token,
+} from "../config/agoraCredential";
 
 export default {
   namespaced: true,
   state: {
     option: {
-      appID: "facc2f66a4394574a83a612d93852cb9",
-      channel: "1",
-      // token:
-      //   "006facc2f66a4394574a83a612d93852cb9IAC+HrPAAG3NYrYhG7SokgyIujHQMk+64uAXzidazLAl7yo6c+RXoFHlIgCZSlYvXCn4XgQAAQDs5fZeAgDs5fZeAwDs5fZeBADs5fZe",
-      // token:
-      //   "006facc2f66a4394574a83a612d93852cb9IABxBXb7J5dQ6CPrMxjzDi91OhHt8g/pkOyjh/gao00zPyo6c+RXoFHlIgDhFPw9ryj4XgQAAQA/5fZeAgA/5fZeAwA/5fZeBAA/5fZe",
-      token:
-        "006facc2f66a4394574a83a612d93852cb9IAA+32TgEt59ONx+5xKgQztI6fHIKNtUdQPn1GFZVdvnN7fv3IMAAAAAEAA/+CcILmj5XgEAAQAuaPle",
-      uid: "",
+      appID: appID,
+      channel: channel,
+      token: token,
+      uid: 0,
       cameraId:
         "8e894bbd72c0fbe871464fa7df1480e12b48ae73ac6a5bf9aa909c6a29e96d28",
       microphoneId: "default",
@@ -31,8 +31,30 @@ export default {
       params: {},
     },
   },
-  mutations: {},
+  mutations: {
+    SET_TOKEN(state, payload) {
+      state.option.token = payload.token;
+      state.option.channel = payload.channel;
+      console.log(state.option);
+    },
+  },
   actions: {
+    async generateRtcToken({ commit }, number) {
+      try {
+        const channel = `classroom${number}`;
+        const { data } = await serverTwoAPI.get(
+          `/rtcToken?channelName=${channel}`
+        );
+        // console.log(data);
+        commit("SET_TOKEN", {
+          token: data.key,
+          channel: channel,
+        });
+      } catch (e) {
+        // statements
+        console.log(e);
+      }
+    },
     Toastify(_, options) {
       M.toast({ html: options.text, classes: options.classes });
     },

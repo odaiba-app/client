@@ -17,8 +17,8 @@ export default {
   actions: {
     async getClassRooms({ commit }) {
       try {
-        const { data } = Axios.get("/classrooms");
-        commit("SET_CLASS_ROOMS", data);
+        // const { data } = Axios.get("/classrooms");
+        // commit("SET_CLASS_ROOMS", data);
       } catch (e) {
         // statements
         console.log(e);
@@ -26,8 +26,8 @@ export default {
     },
     async getClassRoom({ commit }, id) {
       try {
-        const { data } = Axios.get("/classrooms/" + id);
-        commit("SET_CLASS_ROOM", data);
+        // const { data } = Axios.get("/classrooms/" + id);
+        // commit("SET_CLASS_ROOM", data);
       } catch (e) {
         // statements
         console.log(e);
@@ -35,8 +35,8 @@ export default {
     },
     async addClassRoom({ commit, dispatch }, payload) {
       try {
-        const { data } = Axios.post("/classrooms", payload);
-        dispatch("getClassRooms");
+        // const { data } = Axios.post("/classrooms", payload);
+        // dispatch("getClassRooms");
       } catch (e) {
         // statements
         console.log(e);
@@ -44,8 +44,8 @@ export default {
     },
     async updateClassRoom({ commit, dispatch }, id) {
       try {
-        const { data } = Axios.put("/classrooms/" + payload.id, payload);
-        dispatch("getClassRooms");
+        // const { data } = Axios.put("/classrooms/" + payload.id, payload);
+        // dispatch("getClassRooms");
       } catch (e) {
         // statements
         console.log(e);
@@ -53,8 +53,8 @@ export default {
     },
     async deleteClassRoom({ commit, dispatch }, id) {
       try {
-        const { data } = Axios.delete("/classrooms/" + payload.id);
-        dispatch("getClassRooms");
+        // const { data } = Axios.delete("/classrooms/" + payload.id);
+        // dispatch("getClassRooms");
       } catch (e) {
         // statements
         console.log(e);

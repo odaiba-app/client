@@ -21,12 +21,27 @@ export default {
     return {};
   },
   computed: {
+    ...mapState("workGroups", ["group"]),
     ...mapState("AudioCall", ["option"]),
   },
   methods: {
-    ...mapActions("AudioCall", ["join", "leave", "getDevices"]),
+    ...mapActions("AudioCall", [
+      "join",
+      "leave",
+      "getDevices",
+      "generateRtcToken",
+    ]),
     play() {
       this.join();
+    },
+  },
+  watch: {
+    group(val) {
+      const channel = val.video_call_code;
+      console.log(channel);
+      if (channel) {
+        this.generateRtcToken(channel);
+      }
     },
   },
   created() {

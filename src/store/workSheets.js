@@ -1,7 +1,7 @@
 import Axios from "axios";
 import io from "socket.io-client";
-import { socket_url } from "../url";
-const socket = io(socket_url);
+import { socketUrl } from "../config/api";
+const socket = io(socketUrl);
 
 export default {
   namespaced: true,

@@ -45,9 +45,11 @@ export default {
       sheetsTemp = JSON.parse(sheetsTemp);
       sheetsTemp[payload.indexArray].questions[payload.code] = payload.answer;
       state.sheets = sheetsTemp;
+      console.log(state.groupid);
       socket.emit("updateSheet", {
         sheets: state.sheets,
         groupid: state.groupid,
+        room: `group${state.groupid}`,
       });
     },
     SET_GROUP(state, payload) {
@@ -63,6 +65,8 @@ export default {
       // commit("SET_SHEETS", sheets);
     },
     GetWorkGroup({ state, commit }) {
+      socket.emit("joinRoom", `group${state.groupid}`);
+
       const name = localStorage.getItem("odaiba.name");
       socket.on(`getWorkGroup-${name}`, function(workGroup) {
         commit("SET_SHEETS", workGroup.sheets);
@@ -84,6 +88,7 @@ export default {
     },
     AnswerQuestion({ commit, state }, payload) {
       commit("INPUT_ANSWER", payload);
+      payload.room = `group${state.groupid}`;
       socket.emit("answerQ", payload);
     },
     UpdateAnswer({ commit }) {

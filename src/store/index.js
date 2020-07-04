@@ -32,7 +32,7 @@ export default new Vuex.Store({
         };
         localStorage.setItem("odaiba.token", "token");
         localStorage.setItem("odaiba.userId", 1);
-        localStorage.setItem("odaiba.name", "dzakki");
+        localStorage.setItem("odaiba.name", payload.username);
         localStorage.setItem("odaiba.role", payload.role);
         commit("SET_ISLOGIN", data);
         payload.cb();

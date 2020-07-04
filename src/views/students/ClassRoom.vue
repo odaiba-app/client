@@ -105,7 +105,12 @@ export default {
     ...mapState("VideoCall", ["option"]),
   },
   methods: {
-    ...mapActions("VideoCall", ["getDevices", "join", "leave"]),
+    ...mapActions("VideoCall", [
+      "getDevices",
+      "join",
+      "leave",
+      "generateRtcToken",
+    ]),
     joinRoom() {
       this.statusJoin = true;
       this.join();
@@ -127,6 +132,8 @@ export default {
     );
     // console.log(resolutions);
     console.log();
+    this.generateRtcToken(this.$route.params.id);
+
     this.getDevices((devices) => {
       this.option.cameraId = devices.videos[0].value;
       console.log(this.option);

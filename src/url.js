@@ -1,2 +1,3 @@
-export const socket_url = `https://socket-odaiba.herokuapp.com`;
-// export const socket_url = `http://localhost:3001`;
+// export const socket_url = `https://socket-odaiba.herokuapp.com`;
+export const socket_url = `http://localhost:3001`;
+export const api_url = `http://localhost:3000`;

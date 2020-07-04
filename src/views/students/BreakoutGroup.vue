@@ -172,7 +172,7 @@ export default {
     TimerCountdown,
   },
   computed: {
-    ...mapState("workSheets", ["sheets", "count", "group"]),
+    ...mapState("workGroups", ["sheets", "count", "group"]),
     members() {
       if (!this.group) return [];
       const membersTemp = [];
@@ -195,16 +195,17 @@ export default {
     },
   },
   methods: {
-    ...mapActions("workSheets", [
+    ...mapActions("workGroups", [
       "getWorkSheets",
       "UpdateAnswer",
       "NewQuestion",
       "UpdateQuestion",
       "GetGroups",
       "ListenGroups",
+      "GetWorkGroup",
     ]),
     ...mapActions("AudioCall", ["join", "leave", "getDevices"]),
-    ...mapMutations("workSheets", [
+    ...mapMutations("workGroups", [
       "SET_GROUPID",
       "SET_SHEETS",
       "CLEAR_SHEETS",
@@ -233,7 +234,8 @@ export default {
     this.SET_GROUPID(this.$route.params.work_group_id);
     this.CLEAR_SHEETS();
     this.ListenGroups();
-    this.getWorkSheets();
+    // this.getWorkSheets();
+    this.GetWorkGroup();
     this.UpdateAnswer();
     this.UpdateQuestion(); // get new qeustion from api
     this.GetGroups();

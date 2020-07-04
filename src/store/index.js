@@ -5,7 +5,6 @@ import Router from "../router";
 
 import classRooms from "./classRooms";
 import workGroups from "./workGroups";
-import workSheets from "./workSheets";
 import VideoCall from "./VideoCall";
 import AudioCall from "./AudioCall";
 
@@ -47,7 +46,6 @@ export default new Vuex.Store({
   modules: {
     classRooms,
     workGroups,
-    workSheets,
     VideoCall,
     AudioCall,
   },
